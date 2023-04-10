@@ -1,5 +1,6 @@
 package com.challenge.voting;
 
+import org.jruby.RubyBoolean.True;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,6 +9,7 @@ class VotingApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }

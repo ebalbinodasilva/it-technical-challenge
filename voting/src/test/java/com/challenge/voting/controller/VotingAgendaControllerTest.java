@@ -3,19 +3,22 @@ package com.challenge.voting.controller;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.challenge.voting.entity.VotingAgenda;
+import com.challenge.voting.entity.Agenda;
 import com.challenge.voting.service.VotingAgendaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ExtendWith(MockitoExtension.class)
 public class VotingAgendaControllerTest {
     @Mock
     private VotingAgendaService votingAgendaService;
@@ -32,11 +35,11 @@ public class VotingAgendaControllerTest {
 
     @Test
     public void testCreateVotingAgenda() throws Exception {
-        VotingAgenda votingAgenda = new VotingAgenda();
+        Agenda votingAgenda = new Agenda();
         votingAgenda.setId(1L);
         votingAgenda.setTitle("Test Voting Agenda");
 
-        Mockito.when(votingAgendaService.createVotingAgenda(Mockito.any(VotingAgenda.class))).thenReturn(votingAgenda);
+        Mockito.when(votingAgendaService.createVotingAgenda(Mockito.any(Agenda.class))).thenReturn(votingAgenda);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(votingAgenda);
