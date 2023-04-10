@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.challenge.voting.entity.Agenda;
@@ -34,6 +36,9 @@ public class PollingSessionControllerTest {
 
     @Test
     public void testOpenPollingSession() throws Exception {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.plusMinutes(30);
+                
         Agenda agenda = new Agenda();
         agenda.setId(UUID.randomUUID());
         agenda.setTitle("Test Agenda");
@@ -46,19 +51,17 @@ public class PollingSessionControllerTest {
 
         Mockito.when(pollingSessionService.createPollingSession(Mockito.any(), Mockito.any(LocalDateTime.class)))
                 .thenReturn(pollingSession);
-
-        mockMvc.perform(post("/polling-session/open")
+        
+              
+        mockMvc.perform(MockMvcRequestBuilders.post("/polling-session/open")
                 .param("agendaId", "1")
-                .param("startTime", LocalDateTime.now().toString())
-                .param("endTime", LocalDateTime.now().plusMinutes(30).toString()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.endTime", is(pollingSession.getEndDate().toString())))
-                .andExpect(jsonPath("$.agenda.id", is(agenda.getId().intValue())))
-                .andExpect(jsonPath("$.agenda.title", is(agenda.getTitle())));
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.endTime").value(endTime.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.agenda.id").value(agenda.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.agenda.title").value(agenda.getTitle()));
     }
-
-    private Object post(String string) {
-        return null;
-    }
+   
 }
