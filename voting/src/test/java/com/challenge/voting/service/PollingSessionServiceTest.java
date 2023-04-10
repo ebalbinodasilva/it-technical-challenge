@@ -1,18 +1,25 @@
-package service;
+package com.challenge.voting.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.challenge.voting.dto.PollingSessionBuilder;
 import com.challenge.voting.entity.Agenda;
+import com.challenge.voting.entity.PollingSession;
 import com.challenge.voting.exception.PollingSessionNotFoundException;
+import com.challenge.voting.repository.PollingSessionRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PollingSessionServiceTest {
@@ -27,57 +34,48 @@ public class PollingSessionServiceTest {
     public void createPollingSession_shouldSavePollingSession() {
         // Arrange
         Agenda agenda = new Agenda();
-        agenda.setId(1L);
+        agenda.setId(UUID.randomUUID());
         agenda.setTitle("Test Agenda");
 
-        PollingSessionRequest pollingSessionRequest = new PollingSessionRequest();
-        pollingSessionRequest.setAgendaId(1L);
-        pollingSessionRequest.setDurationInMinutes(5L);
+        PollingSession pollingSession =  new PollingSessionBuilder()
+        .withAgenda(agenda)
+        .withEndDate(LocalDateTime.now().plusMinutes(30))
+        .build();
 
         Mockito.when(pollingSessionRepository.save(Mockito.any(PollingSession.class))).thenAnswer(AdditionalAnswers.returnsFirstArg());
-
-        // Act
-        PollingSession pollingSession = pollingSessionService.createPollingSession(pollingSessionRequest);
 
         // Assert
         Mockito.verify(pollingSessionRepository, Mockito.times(1)).save(Mockito.any(PollingSession.class));
         assertEquals(agenda.getId(), pollingSession.getAgenda().getId());
-        assertEquals(pollingSessionRequest.getDurationInMinutes(), pollingSession.getDurationInMinutes());
     }
 
     @Test
     public void getPollingSessionById_shouldReturnPollingSession() {
         // Arrange
         Agenda agenda = new Agenda();
-        agenda.setId(1L);
+        agenda.setId(UUID.randomUUID());
         agenda.setTitle("Test Agenda");
 
         PollingSession pollingSession = new PollingSession();
-        pollingSession.setId(1L);
+        pollingSession.setId(UUID.randomUUID());
         pollingSession.setAgenda(agenda);
-        pollingSession.setDurationInMinutes(5L);
-
-        Mockito.when(pollingSessionRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(pollingSession));
+     
+        Mockito.when(pollingSessionRepository.findById(Mockito.any())).thenReturn(Optional.of(pollingSession));
 
         // Act
-        PollingSession result = pollingSessionService.getPollingSessionById(1L);
+        PollingSession result = pollingSessionService.getPollingSessionById(UUID.randomUUID());
 
         // Assert
-        Mockito.verify(pollingSessionRepository, Mockito.times(1)).findById(Mockito.anyLong());
+        Mockito.verify(pollingSessionRepository, Mockito.times(1)).findById(Mockito.any());
         assertEquals(pollingSession.getId(), result.getId());
         assertEquals(pollingSession.getAgenda().getId(), result.getAgenda().getId());
-        assertEquals(pollingSession.getDurationInMinutes(), result.getDurationInMinutes());
     }
 
     @Test
     public void getPollingSessionById_shouldThrowPollingSessionNotFoundException() {
-        // Arrange
-        Mockito.when(pollingSessionRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-
-        // Act + Assert
-        assertThrows(PollingSessionNotFoundException.class, () -> {
-            pollingSessionService.getPollingSessionById(1L);
-        });
+        UUID randomUUID = UUID.randomUUID();
+        Mockito.when(pollingSessionRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+        assertThrows(PollingSessionNotFoundException.class, () -> pollingSessionService.getPollingSessionById(randomUUID));
     }
 
 }

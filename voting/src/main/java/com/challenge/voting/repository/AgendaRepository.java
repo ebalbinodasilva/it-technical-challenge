@@ -1,10 +1,10 @@
 package com.challenge.voting.repository;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import com.challenge.voting.entity.Agenda;
 
-@Repository
-public interface VotingAgendaRepository extends JpaRepository<Agenda, Long>{
+public interface AgendaRepository extends JpaRepository<Agenda, UUID>{
     
 }

@@ -1,5 +1,7 @@
 package com.challenge.voting.controller;
 
+import java.util.UUID;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,13 +17,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.challenge.voting.entity.Agenda;
-import com.challenge.voting.service.VotingAgendaService;
+import com.challenge.voting.service.AgendaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
-public class VotingAgendaControllerTest {
+public class AgendaControllerTest {
     @Mock
-    private VotingAgendaService votingAgendaService;
+    private AgendaService agendaService;
 
     @InjectMocks
     private VotingAgendaController votingAgendaController;
@@ -36,10 +38,10 @@ public class VotingAgendaControllerTest {
     @Test
     public void testCreateVotingAgenda() throws Exception {
         Agenda votingAgenda = new Agenda();
-        votingAgenda.setId(1L);
+        votingAgenda.setId(UUID.randomUUID());
         votingAgenda.setTitle("Test Voting Agenda");
 
-        Mockito.when(votingAgendaService.createVotingAgenda(Mockito.any(Agenda.class))).thenReturn(votingAgenda);
+        Mockito.when(agendaService.createAgenda(Mockito.any(Agenda.class))).thenReturn(votingAgenda);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestBody = objectMapper.writeValueAsString(votingAgenda);

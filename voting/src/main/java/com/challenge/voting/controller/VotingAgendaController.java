@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.challenge.voting.entity.Agenda;
-import com.challenge.voting.service.VotingAgendaService;
+import com.challenge.voting.service.AgendaService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -17,13 +17,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 public class VotingAgendaController {
     
     @Autowired
-    private VotingAgendaService votingAgendaService;
+    private AgendaService votingAgendaService;
 
    
     @PostMapping
-    public ResponseEntity<Agenda> createVotingAgenda(@RequestBody Agenda votingAgenda) {
-        Agenda createdVotingAgenda = votingAgendaService.createVotingAgenda(votingAgenda);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdVotingAgenda);
+    public ResponseEntity<Agenda> createVotingAgenda(@RequestBody Agenda agenda) {
+        Agenda createdAgenda = votingAgendaService.createAgenda(agenda);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAgenda);
     }
 }
 
